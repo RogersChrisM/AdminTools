@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $# -lt 2 ]]; then
+  echo "Usage: $0 <script> <logfile>"
+  exit 1
+fi
 
 # Submits job to background
 

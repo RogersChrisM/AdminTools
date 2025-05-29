@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $# -lt 3 ]]; then
+  echo "Usage: $0 <source> <target> <dry_run>"
+  exit 1
+fi
 
 # syncs files across data directories. Designed for manual sync where you want to preview changes or quickly replicate a directory elsewhere (i.e. USB backup). Will not remove stale files from target.
 

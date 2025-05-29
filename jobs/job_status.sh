@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $# -lt 1 ]]; then
+  echo "Usage: $0 <pattern>"
+  exit 1
+fi
 
 # Check running jobs by pattern
 

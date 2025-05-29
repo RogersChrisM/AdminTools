@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $# -lt 2 ]]; then
+  echo "Usage: $0 <prefix> <count>"
+  exit 1
+fi
 
 # Generate multiple inputs
 

@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $# -lt 2 ]]; then
+  echo "Usage: $0 <source> <target>"
+  exit 1
+fi
 
 # Copy most recently modified file
 
