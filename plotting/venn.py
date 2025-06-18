@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 import matplotlib.pyplot as plt
 

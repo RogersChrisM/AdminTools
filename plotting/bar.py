@@ -6,14 +6,15 @@ def plot_bar(
     df,
     x,
     y,
+    outName='bar',
     hue=None,
-    title="Bar Plot",
+    title=None,
     xlabel=None,
     ylabel=None,
-    color_palette="Set2",
+    color_palette='Set2',
     show_values=True,
     figsize=(10, 6),
-    rotation=0
+    rotation=45
 ):
     """
     Plots a single or grouped bar plot.
@@ -31,23 +32,38 @@ def plot_bar(
     - figsize (tuple): Figure size.
     - rotation (int): Rotation for x-axis labels.
     """
+    def cap_label(label):
+        label=str(label)
+        if label and label[0].isalpha():
+            return label[0].upper() + label[1:]
+        else:
+            return label
+            
+    sns.reset_defaults()
     plt.figure(figsize=figsize)
     ax = sns.barplot(data=df, x=x, y=y, hue=hue, palette=color_palette)
+    
+    labels=[item.get_text() for item in ax.get_xticklabels()]
+    new_labels=[cap_label(label) for label in labels]
+    ax.set_xticklabels(new_labels)
 
     if show_values:
         for container in ax.containers:
             ax.bar_label(container, fmt='%.2f', label_type='edge', padding=3)
-
-    ax.set_title(title)
+    
+    if title is not None:
+        ax.set_title(title)
     ax.set_xlabel(xlabel if xlabel else x)
     ax.set_ylabel(ylabel if ylabel else y)
     ax.tick_params(axis='x', rotation=rotation)
 
     if hue:
         ax.legend(title=hue)
-    else:
-        ax.legend_.remove()
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f'{outName}.pdf',format='pdf')
+    plt.savefig(f'{outName}.png')
 
+if __name__ == '__main__':
+    print("Not for standalone use.")
+    exit(1)
