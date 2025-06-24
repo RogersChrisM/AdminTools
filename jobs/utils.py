@@ -1,8 +1,10 @@
+#jobs.utils
 import subprocess
 import os
+import tempfile
 from debug.utils import info,error
 
-def run_remote_exec(command: str, remote_host: str = 'crogers@hpc.stjude.org', key=True, use_logger=False, logger=None):
+def run_remote(command: str, remote_host: str = 'crogers@hpc.stjude.org', key=True, use_logger=False, logger=None):
     """
     Call the remote_exec.sh bash script from Python with given remote and command.
     
@@ -92,12 +94,82 @@ def transfer(files, remote_host: str ='crogers@hpc.stjude.org' , remote_path: st
             print(f"[ERROR]: Unable to upload: {file}:\n{e}")
             raise
 
-def transfer_from
 
-# Example usage #
-#transfer("data/file.txt")
-#transfer(["data/file1.txt","data/file2.txt"], remote_path="~/scratch")
+def run_temp_input(inputs=None, command_args=None, keep_temp=False, use_logger=False, logger=None):
+    """
+    Run a subprocess command optionally writing inputs to a temp file.
 
+    Args:
+        inputs (str or list of str, optional): Lines to write to a temp input file.
+            If None, no temp file is created.
+        command_args (list of str): Full list of command and arguments to run,
+            e.g. ['python3', 'script.py', '-i', '<tempfile>'].
+            Use '<tempfile>' as a placeholder where the temp filename should be inserted!
+        keep_temp (bool): If True, do NOT delete the temp input file after running.
+        use_logger (bool): If True, use logger.info for output.
+        logger (logging.Logger): Logger instance to use if use_logger is True.
+
+    Returns:
+        subprocess.CompletedProcess: The result from subprocess.run()
+
+    Raises:
+        ValueError: if command_args missing or invalid, or logger missing if use_logger=True.
+        TypeError: if inputs type invalid.
+        FileNotFoundError: if script not found.
+    """
+    if not command_args or not isinstance(command_args, (list, tuple)):
+        raise ValueError("`command_args` must be a non-empty list or tuple of strings.")
+    if use_logger and logger is None:
+        raise ValueError("[ERROR] Logger object must be provided if use_logger=True")
+    log = logger.info if use_logger else print
+    error = logger.error if use_logger else print
+    if inputs is not None:
+        if isinstance(inputs, str):
+            input_lines = [inputs]
+        elif isinstance(inputs, (list, tuple)):
+            input_lines = list(inputs)
+        else:
+            raise TypeError("[ERROR] `inputs` must be a string or a list/tuple of strings.")
+
+        with tempfile.NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as tmp:
+            for line in input_lines:
+                tmp.write(line.strip() + '\n')
+            tmp_path = tmp.name
+            log(f"[INFO] Temporary input file created at: {tmp_path}")
+    else:
+        tmp_path = None
+    cmd = []
+    for arg in command_args:
+        if arg == '<tempfile>':
+            if tmp_path is None:
+                raise ValueError("[ERROR] Command includes '<tempfile>' but no inputs were provided.")
+            cmd.append(tmp_path)
+        else:
+            cmd.append(arg)
+    log(f"[INFO] Running command: {' '.join(cmd)}")
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        log(f"[INFO] Command finished successfully with return code {result.returncode}")
+        if result.stdout:
+            log(f"STDOUT:\n{result.stdout.strip()}")
+        if result.stderr:
+            log(f"STDERR:\n{result.stderr.strip()}")
+    except subprocess.CalledProcessError as e:
+        log(f"[INFO] Command failed with return code {e.returncode}")
+        if e.stdout:
+            log(f"STDOUT:\n{e.stdout.strip()}")
+        if e.stderr:
+            log(f"STDERR:\n{e.stderr.strip()}")
+        raise
+    finally:
+        if tmp_path and not keep_temp:
+            try:
+                os.remove(tmp_path)
+                log(f"[INFO] Temporary input file deleted: {tmp_path}")
+            except Exception as e:
+                log(f"[INFO] Failed to delete temp file {tmp_path}: {e}")
+    return result
+    
 
     
 if __name__=='__main__':
