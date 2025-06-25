@@ -54,3 +54,10 @@ mv "$TMP_FILE" "$SCRIPT"
     echo "# Date: $(date +%Y-%m-%d)"
     echo "# SHA256: $HASH"
 } >> "$SCRIPT"
+
+chmod +x "$SCRIPT"
+
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-25
+# SHA256: 05fe3116721a86f6bf40cf6c869f03c25ca24ea507988ba5dbda9e523f0a6d06
