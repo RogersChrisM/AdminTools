@@ -1,29 +1,54 @@
 #!/bin/bash
-"""
-FileName:  newpy.sh
 
-Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
+#FileName:  newpy.sh
+#
+#Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
+#
+#Description:
+#    Creates new formatted pythonFile based on boilerplate.
+#
+#Params:
+#    script_name (str): Name of script being created.
+#    --no-exec (flag): Creates non-executable script if used.
+#
+#Associated Package:
+#    admin_tools (CM Rogers)
+#
+#Usage:
+#    newpy.sh <script_name> [--no-exec] [--no-ide] [--ide=Xcode]
 
-Description:
-    Creates new formatted pythonFile based on boilerplate.
+usage() {
+  echo "Usage: $0 <script_name> [--no-exec] [--no-ide] [--ide=Xcode]"
+  echo "  <script_name>   Name of script to be created"
+  echo "  [--no-exec]     Create non-executable script"
+  echo "  [--no-ide]      Do not automatically open an ide after creation"
+  echo "  [--ide=<X>]     Set IDE. Default=Xcode"
+  exit 1
+}
 
-Params:
-    script_name (str): Name of script being created.
-    --no-exec (flag): Creates non-executable script if used.
-    
-Associated Package:
-    admin_tools (CM Rogers)
- 
-Usage: 
-    newpy.sh <script_name> [--no-exec]
-"""
+CREATED_ON="$(date)"
+HOSTNAME="$(hostname)"
+OS_NAME="$(uname -s)"
+OS_VERSION="$(uname -r)"
+BASH_VERSION_FULL="$BASH_VERSION"
+USER_NAME="$USER"
+
 SCRIPT_NAME=""
 EXECUTABLE=true
+OPEN_IDE=true
+IDE='Xcode'
 
 for arg in "$@"; do
     case "$arg" in
         --no-exec)
             EXECUTABLE=false
+            ;;
+        --no-ide)
+            OPEN_IDE=false
+            ;;
+        --ide=*)
+            IDE="${arg#--ide=}"
+            IDE="$(echo -e "${IDE}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
             ;;
         -*)
             echo "Unknown option: $arg"
@@ -36,8 +61,12 @@ for arg in "$@"; do
 done
 
 if [ -z "$SCRIPT_NAME" ]; then
-    echo "Usage: $0 <script_name> [--no-exec]"
-    exit 1
+    echo "Error: Missing required arguments."
+    usage
+fi
+
+if [[ -z "$IDE" ]]; then
+    IDE="Xcode"
 fi
 
 if [[ "$SCRIPT_NAME" != *.py ]]; then
@@ -70,34 +99,38 @@ fi
     echo
     echo "Associated Package:"
     echo
+    echo "Creation Date: $CREATED_ON"
+    echo "    Host: $HOSTNAME"
+    echo "    OS: $OS_NAME $OS_VERSION"
+    echo "    Bash: $BASH_VERSION_FULL"
+    echo "    User: $USER_NAME"
     echo
     echo "Usage:"
     echo "    ./$SCRIPT_NAME -i <inputFile> [--debug]"
     echo "\"\"\""
     echo
-
     if $EXECUTABLE; then
         echo "import argparse"
         echo "from utils.utils import reset_directory, setup_logging, get_loggers"
         echo "from inputs.utils import check_input_file"
         echo
         echo
-        echo "def <function>( ,logger=None, debug=False):"
-        echo "    \"\"\""
-        echo
-        echo
-        echo "    Params:"
-        echo
-        echo "    [Result(s)/Returns]:"
-        echo
-        echo "    \"\"\""
-        echo "    log, error=get_loggers(debug,logger)"
+        echo "#def <function>( ,logger=None, debug=False):"
+        echo "#    \"\"\""
+        echo "#"
+        echo "#"
+        echo "#    Params:"
+        echo "#"
+        echo "#    [Result(s)/Returns]:"
+        echo "#"
+        echo "#    \"\"\""
+        echo "#    log, error=get_loggers(debug,logger)"
         echo
         echo
         echo "def main():"
         echo "    parser=argparse.ArgumentParser()"
         echo "    parser.add_argument('-i', '--inputFile', required=True, help='Input file')"
-        echo "    parser.add_argument()"
+        echo "    #parser.add_argument()"
         echo "    parser.add_argument('--debug', action='store_true', help='Not for end user.')"
         echo "    args=parser.parse_args()"
         echo
@@ -108,11 +141,11 @@ fi
         echo "    print(f\"InputFile Validation Failure\", error)"
         echo "    exit(1)"
         echo
-        echo " logger, log, error=setup_logging(debug=args.debug, logfile='$SCRIPT_NAME'"
+        echo " logger, log, error=setup_logging(debug=args.debug, logfile='$SCRIPT_NAME')"
         echo "#out_struct=['./output',"
         echo "#            './output/temp']"
         echo
-        echo "reset_directory(out_struct)"
+        echo "#reset_directory(out_struct)"
         echo
         echo
         echo "if __name__ == '__main__':"
@@ -125,6 +158,9 @@ fi
         echo "    print(\"Not for standalone use\")"
         echo "    exit(1)"
     fi
+    echo
+    echo
+    echo
 } > "$SCRIPT_NAME"
 
 if $EXECUTABLE; then
@@ -132,7 +168,21 @@ chmod +x "$SCRIPT_NAME"
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-"$SCRIPT_DIR/sign_script.sh" "$SCRIPT_NAME"
+"$SCRIPT_DIR/sign.sh" "$SCRIPT_NAME"
 
 echo "Created '$SCRIPT_NAME' [$([ "$EXECUTABLE" = true ] && echo "executable" || echo "module") mode]"
 
+if $OPEN_IDE; then
+    if command -v open >/dev/null 2>&1; then
+        open -a "$IDE" "$SCRIPT_NAME"
+    else
+        echo "Warning: Unable to open $IDE."
+    fi
+fi
+
+
+
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: bba439df5cf089ebdd029f89a19292cd8f11f0bef292ea77f259de244c3196d9

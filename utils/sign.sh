@@ -1,21 +1,20 @@
 #!/bin/bash
-: '
-FileName:  sign_script.sh
 
-Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
-
-Description:
-    Signs file for general verification use by adding or replacing a trailing SHA256 signature block.
-
-Params:
-    script (str): Name of script to be signed.
-    
-Associated Package:
-    admin_tools (CM Rogers)
-
-Usage:
-    sign_script.sh <script>
-'
+#FileName:  sign_script.sh
+#
+#Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
+#
+#Description:
+#    Signs file for general verification use by adding or replacing a trailing SHA256 signature block.
+#
+#Params:
+#    script (str): Name of script to be signed.
+#
+#Associated Package:
+#    admin_tools (CM Rogers)
+#
+#Usage:
+#    sign_script.sh <script>
 
 usage() {
     echo "Usage: $0 <script>"
@@ -35,20 +34,19 @@ if [[ ! -f "$SCRIPT" ]]; then
     exit 1
 fi
 
-HASH=$(shasum -a 256 "$SCRIPT" | awk '{print $1}')
-
 TMP_FILE=$(mktemp)
 
 awk '
     BEGIN { skip=0 }
-    /^# --- Signature ---/ { skip=1 }
-    skip == 0 { print }
+    /^# --- Signature ---/ { exit }  # Stop at the signature block
+    { print }
 ' "$SCRIPT" > "$TMP_FILE"
+
+HASH=$(shasum -a 256 "$TMP_FILE" | awk '{print $1}')
 
 mv "$TMP_FILE" "$SCRIPT"
 
 {
-    echo
     echo "# --- Signature ---"
     echo "# Author: CM Rogers (https://github.com/RogersChrisM/)"
     echo "# Date: $(date +%Y-%m-%d)"
@@ -57,7 +55,9 @@ mv "$TMP_FILE" "$SCRIPT"
 
 chmod +x "$SCRIPT"
 
+
+
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-06-25
-# SHA256: 05fe3116721a86f6bf40cf6c869f03c25ca24ea507988ba5dbda9e523f0a6d06
+# Date: 2025-06-26
+# SHA256: 44fd4f569a7c200f3a14babc61ec68c6d658a42a03944555d5b4dbb65fafef0e

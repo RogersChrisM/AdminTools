@@ -1,22 +1,21 @@
 #!/bin/bash
-: '
-FileName:  verify_signature.sh
 
-Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
-
-Description:
-    Verifies the integrity of a script by comparing its actual SHA256 hash
-    to the signature block embedded at the end (if present).
-
-Params:
-    script (str): Name of script to verify.
-
-Associated Package:
-    admin_tools (CM Rogers)
-
-Usage:
-    verify_signature.sh <script>
-'
+#FileName:  verify_signature.sh
+#
+#Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
+#
+#Description:
+#    Verifies the integrity of a script by comparing its actual SHA256 hash
+#    to the signature block embedded at the end (if present).
+#
+#Params:
+#    script (str): Name of script to verify.
+#
+#Associated Package:
+#    admin_tools (CM Rogers)
+#
+#Usage:
+#    verify_signature.sh <script>
 
 usage() {
     echo "Usage: $0 <script>"
@@ -48,8 +47,8 @@ fi
 TMP_FILE=$(mktemp)
 awk '
     BEGIN { skip=0 }
-    /^# --- Signature ---/ { skip=1 }
-    skip == 0 { print }
+    /^# --- Signature ---/ { exit }
+    { print }
 ' "$SCRIPT" > "$TMP_FILE"
 
 ACTUAL_HASH=$(shasum -a 256 "$TMP_FILE" | awk '{print $1}')
@@ -68,7 +67,8 @@ else
 fi
 
 
+
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-06-25
-# SHA256: bd75f75fdd307f8c4b24d6aac94e6b8f6dff23e869d47e8c8d20133cdca997fa
+# Date: 2025-06-26
+# SHA256: e7b760b3f97c107a6a77126a53602464d632e47f6c7ebf8a70a4009455ab3fd6
