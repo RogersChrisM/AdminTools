@@ -110,3 +110,7 @@ def
 if __name__=='__main__':
     print("Not for standalone use.")
     exit(1)
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-07-01
+# SHA256: 6f384e04d736e84288d7f7ad830044cb03271f6c0c0e2971e350796c27b09a61

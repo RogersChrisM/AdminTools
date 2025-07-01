@@ -190,3 +190,7 @@ def waitForProcess(pids, script_path='~/Desktop/python_scripts/admin_tools/jobs/
 if __name__=='__main__':
     print("Not for standalone use.")
     exit(1)
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-07-01
+# SHA256: 1354b27d17b5ee57ee19181dc35c4e13545ba3734aae91f667ef9490cc650b2b
