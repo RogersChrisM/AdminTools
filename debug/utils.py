@@ -7,7 +7,6 @@ import time
 import sys
 from functools import wraps
 from contextlib import contextmanager
-import os
 import psutil
 
 DEBUG_MODE=False
@@ -30,7 +29,7 @@ def df_info(df, name='DataFrame'):
     """Prints basic info about a pandas DataFrame."""
     print(f"\n[DEBUG] {name} shape: {df.shape}")
     print(f"[DEBUG] {name} Columns:")
-    print(list(df.columns)
+    print(list(df.columns))
     print(f"[DEBUG] First few rows of {name}:")
     print(df.head())
 
@@ -108,7 +107,7 @@ def debug_log(message):
 def debug_memory_snapshot(label="Current"):
     if DEBUG_MODE:
         mem = current_memory_usage_mb()
-        debug_log(f"{label} memory usage: {mem.2f} MB")
+        debug_log(f"{label} memory usage: {mem:.2f} MB")
         
 def print_memory_usage(label="Memory"):
     """Prints current memory usage {requires psutil)."""
@@ -136,7 +135,7 @@ def estimate_object_size(obj, label='Object'):
     """
     size_bytes=sys.getsizeof(obj)
     size_mb = size_bytes / 1024 / 1024
-    print(f"[DEBUG] {label} estimated size: {size_mb.4f} MB")
+    print(f"[DEBUG] {label} estimated size: {size_mb:.4f} MB")
     return size_mb
     
 def track_memory(func):
@@ -229,7 +228,7 @@ def estimate_and_log_object_size(obj, label='Object'):
 
 
 
-def debug_call(func_name, *args, *kwargs):
+def debug_call(func_name, *args, **kwargs):
     """
     Dynamically calls a function from debug.utils and logs result.
     

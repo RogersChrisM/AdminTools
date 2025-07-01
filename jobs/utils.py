@@ -1,8 +1,8 @@
-#jobs.utils
 import subprocess
 import os
 import tempfile
-from debug.utils import info,error
+from utils.utils import get_loggers
+
 
 def run_remote(command: str, remote_host: str = 'crogers@hpc.stjude.org', key=True, use_logger=False, logger=None):
     """
@@ -22,10 +22,9 @@ def run_remote(command: str, remote_host: str = 'crogers@hpc.stjude.org', key=Tr
         "plotHeatmap -m matrix.gz -out heatmap.png")
         Recommended: if using the second option, save to a 'command' var prior to passing.
     """
-    log = logger.info if use_logger else print
-    error = logger.error if use_logger else print
-    current_dir = os.path.dirname(os.path.abspath(__file__))  # dir of this .py file
-    script_path = os.path.join(current_dir, 'remote_exec.sh')
+    log, error=get_loggers(use_logger,logger)
+    current_dir=os.path.dirname(os.path.abspath(__file__))  # dir of this .py file
+    script_path=os.path.join(current_dir, 'remote_exec.sh')
     if key:
         KEY=os.path.expanduser('~/.ssh/id_rsa')
         args=[script_path, remote_host, command, '-k', KEY]
@@ -38,13 +37,10 @@ def run_remote(command: str, remote_host: str = 'crogers@hpc.stjude.org', key=Tr
     except subprocess.CalledProcessError as e:
         error(f"[ERROR] Remote job failed:\n{e.stderr}")
         raise
-
-# Example usage #
-#run_remote("module load deepTools")
     
-def transfer(files, remote_host: str ='crogers@hpc.stjude.org' , remote_path: str ='~/remote', key=True, direction:str='upload', use_logger=False, logger=None):
+def transfer(files, remote_host: str ='crogers@hpc.stjude.org' , remote_path: str ='/home/crogers/remote', key=True, direction:str='upload', local_path=None, use_logger=False, logger=None):
     """
-    Upload or download a list of local files to a remote host using SCP.
+    Upload or download a list of local files to a remote host using SCP. [NOTE]: if downloading, all files are assumed to be in remote_path!
 
     Args:
         files (str or list of str): File(s) to transfer. Ensure each is a string of the absolute path.
@@ -55,44 +51,44 @@ def transfer(files, remote_host: str ='crogers@hpc.stjude.org' , remote_path: st
         use_logger (bool): Whether to log output using a logger.
         logger: A configured logging.Logger instance.
     """
-    if use_logger and logger is None:
-        raise ValueError("Logger object must be provided if use_logger=True")
-    log = logger.info if use_logger else print
-    error = logger.error if use_logger else print
-    if isinstance(files,str):
+    log, error=get_loggers(use_logger,logger)
+    if isinstance(files, str):
         files=[files]
-    elif not isinstance(files(list,tuple)):
+    elif not isinstance(files, (list, tuple)):
         raise ValueError("`files` must be a string or a list/tuple of strings")
-    remote_path=os.expanduser(remote_path)
-    for file in files:
-        if direction=='upload':
-            if not os.path.exists(file):
-                raise FileNotFoundError(f"[ERROR] Local file does not exist: {file}")
-            local_path=file
-            target_path=f'{remote_host}:{remote_path}/'
-        elif direction=='download':
-            local_path='.'
-            target_path = f'{remote_host}:{file}'
-        else:
-            raise ValueError("`direction` must be 'upload' or 'download'.")
+    if direction=='upload':
+        for f in files:
+            if not os.path.exists(f):
+                raise FileNotFoundError(f"[ERROR] Local file does not exist: {f}")
         if key:
             KEY=os.path.expanduser('~/.ssh/id_rsa')
             args=['scp', '-i', KEY]
         else:
             args=['scp']
-            
-        if direction=='upload':
-            args+=[local_path,target_path]
-            log(f"[INFO] Uploading {file} to {remote_host}:{remote_path}")
-        else:
-            args+=[target_path,local_path]
-            log(f"[INFO] Downloading {file} from {remote_host} to current directory")
+        args.extend(files)
+        args.append(f'{remote_host}:{remote_path}/')
+        log(f"[INFO] Uploading {len(files)} files to {remote_host}:{remote_path}")
+    elif direction=='download':
+        # All files assumed to be in remote_path; download all in one SCP call
+        remote_files=[f"{remote_host}:{remote_path}/{file}" for file in files]
+        if local_path is None:
+            local_path='.'
+        args=base_args + remote_files + [local_path]
+        log(f"[INFO] Downloading {len(files)} files from {remote_host}:{remote_path} to current directory")
         try:
-            subprocess.run(args,check=True)
-            print(f"[INFO] file upload successful: {file}")
+            subprocess.run(args, check=True)
+            log(f"[INFO] File download successful: {files}")
         except subprocess.CalledProcessError as e:
-            print(f"[ERROR]: Unable to upload: {file}:\n{e}")
+            error(f"[ERROR]: Unable to download files {files}:\n{e}")
             raise
+    else:
+        raise ValueError("`direction` must be 'upload' or 'download'.")
+    try:
+        subprocess.run(args, check=True)
+        log(f"[INFO] file transfer successful")
+    except subprocess.CalledProcessError as e:
+        error(f"[ERROR]: Unable to transfer files:\n{e}")
+        raise
 
 
 def run_temp_input(inputs=None, command_args=None, keep_temp=False, use_logger=False, logger=None):
@@ -119,28 +115,25 @@ def run_temp_input(inputs=None, command_args=None, keep_temp=False, use_logger=F
     """
     if not command_args or not isinstance(command_args, (list, tuple)):
         raise ValueError("`command_args` must be a non-empty list or tuple of strings.")
-    if use_logger and logger is None:
-        raise ValueError("[ERROR] Logger object must be provided if use_logger=True")
-    log = logger.info if use_logger else print
-    error = logger.error if use_logger else print
+    log, error=get_loggers(use_logger,logger)
     if inputs is not None:
         if isinstance(inputs, str):
-            input_lines = [inputs]
+            input_lines=[inputs]
         elif isinstance(inputs, (list, tuple)):
-            input_lines = list(inputs)
+            input_lines=list(inputs)
         else:
             raise TypeError("[ERROR] `inputs` must be a string or a list/tuple of strings.")
 
         with tempfile.NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as tmp:
             for line in input_lines:
                 tmp.write(line.strip() + '\n')
-            tmp_path = tmp.name
+            tmp_path=tmp.name
             log(f"[INFO] Temporary input file created at: {tmp_path}")
     else:
-        tmp_path = None
-    cmd = []
+        tmp_path=None
+    cmd=[]
     for arg in command_args:
-        if arg == '<tempfile>':
+        if arg=='<tempfile>':
             if tmp_path is None:
                 raise ValueError("[ERROR] Command includes '<tempfile>' but no inputs were provided.")
             cmd.append(tmp_path)
@@ -148,7 +141,7 @@ def run_temp_input(inputs=None, command_args=None, keep_temp=False, use_logger=F
             cmd.append(arg)
     log(f"[INFO] Running command: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        result=subprocess.run(cmd, check=True, capture_output=True, text=True)
         log(f"[INFO] Command finished successfully with return code {result.returncode}")
         if result.stdout:
             log(f"STDOUT:\n{result.stdout.strip()}")
@@ -170,6 +163,28 @@ def run_temp_input(inputs=None, command_args=None, keep_temp=False, use_logger=F
                 log(f"[INFO] Failed to delete temp file {tmp_path}: {e}")
     return result
     
+
+def waitForProcess(pids, script_path='~/Desktop/python_scripts/admin_tools/jobs/waitForProcess.sh', use_logger=False, logger=None):
+    """
+    Waits for one or more processes to complete using a waitForProcess.sh.
+    
+    Params:
+        pids (int, str, list, or tuple): One or more process IDs to wait for.
+        script_path (str): Path to the shell script waitForProcess.sh within admin_tools package.
+    """
+    script_path=os.path.expanduser(script_path)
+    log, error=get_loggers(use_logger,logger)
+    if isinstance(pids, (int,str)):
+        pids=[pids]
+    for pid in pids:
+        try:
+            completed_process=subprocess.run([script_path, str(pid)], check=True, text=True, capture_output=True)
+            if completed_process.stderr:
+                error("ERRORS ENCOUNTERED:", completed_process.stderr)
+            else:
+                print(f"[PID {pid}] Completed successfully.")
+        except subprocess.CalledProcessError as e:
+            error(f"An error occured while monitoring PID {pid}: {e}")
 
     
 if __name__=='__main__':

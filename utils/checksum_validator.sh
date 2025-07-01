@@ -33,3 +33,7 @@ else
   fi
 fi
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: 3f67db8cf9322aa5290033b5a6b47a2c0bc82d942a4fd7eb87d9c476b3226c65

@@ -20,3 +20,7 @@ def check_input_file(format_name, filename, script_path='~/Desktop/python_script
 if __name__=='__main__':
     print("Not for standalone use.")
     exit(1)
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: fdb08424505f9eb7527b119ee10c59000b367c4a0e361cc659ec3d9391fc0d48

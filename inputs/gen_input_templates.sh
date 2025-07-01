@@ -19,3 +19,7 @@ output_dir=
 EOF
 
 echo "Template created: $OUT"
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: f2583cd46c3f9f06906a37f30cc16bef6556c14bc515df7e264d8aa06ba9dfa3

@@ -15,3 +15,7 @@ for filepath in sys.argv[1:]:
             print(f"[OK] {filepath}: {len(rows)} rows")
         except Exception as e:
             print(f"[ERROR] {filepath}: {e}")
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: bf0eae08d4a935b272cc169533c72dc57898a8e4d80e334a762f65c2da77b6bc

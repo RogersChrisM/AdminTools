@@ -66,3 +66,7 @@ case "$format" in
     ;;
 esac
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2025-06-26
+# SHA256: 97e306e727ea07d451fcc11c81a2b651cd3586ca79ff9584b6071e97b5249387
