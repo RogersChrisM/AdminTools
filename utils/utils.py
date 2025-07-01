@@ -58,9 +58,13 @@ def get_loggers(debug,logger):
         error=print
     return log, error
 
-def setup_logging(debug=False, log_dir='~/logs/', logfile='script.log'):
+def setup_logging(debug=False, log_dir='~/logs/', logfile=None):
     log_dir=os.path.expanduser(log_dir)
     os.makedirs(log_dir, exist_ok=True)
+    if logfile is None:
+        calling_scriptName=os.path.basename(sys.argv[0])
+        base, _=os.path.splitext(script_name)
+        logfile=f'{base}.log'
     if not debug:
         timestamp=datetime.now().strftime('%Y%m%d_%H%M%S')
         base, ext = os.path.splitext(logfile)
