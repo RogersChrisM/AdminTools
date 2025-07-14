@@ -3,7 +3,7 @@ import numpy as np
 import os
 import shutil
 import logging
-import subprocessing
+import subprocess
 import sys
 from datetime import datetime
 
@@ -79,14 +79,14 @@ def setup_logging(debug=False, log_dir='~/logs/', logfile=None):
         return None, print, print
         
 def verify_signature(script_path='/Users/crogers/Desktop/python_scripts/admin_tools/verify_signature.sh', targetFile=None, logger=None, debug=None):
-     """
+    """
     Calls verify_signature.sh on the current script or a specified target file.
 
     Params:
         script_path (str): Path to the signature verification shell script.
         target_file (str): File to verify. Defaults to the calling script.
     """
-    get_loggers(logger, debug)
+    log,error=get_loggers(logger, debug)
     script_path = os.path.abspath(script_path)
     if not os.path.exists(script_path):
         error(f"[ERROR] Signature verification script not found: {script_path}")
@@ -104,8 +104,6 @@ def verify_signature(script_path='/Users/crogers/Desktop/python_scripts/admin_to
         sys.exit(1)
 
     log("[INFO] Signature verification passed.")
-
-def
 
 if __name__=='__main__':
     print("Not for standalone use.")
