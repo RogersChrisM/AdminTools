@@ -104,11 +104,36 @@ def verify_signature(script_path='/Users/crogers/Desktop/python_scripts/admin_to
         sys.exit(1)
 
     log("[INFO] Signature verification passed.")
+    
+def verify_modules(checkList, debug=None, logger=None):
+    unverified_modules=[]
+    log, error=get_loggers(debug, logger)
+    for name in checkList:
+        try:
+            module=importlib.import_module(name)
+            module_path=os.path.abspath(module.__file__)
+            log(f"[INFO] Verifying: {name} ({module_path})")
+            verify_signature(targetFile=module_path)
+        except Exception as e:
+            error(f"[ERROR] unable to verify module: {name}")
+            unverified_modules.append((name, str(e)))
+    if unverified_modules:
+        print("[ERROR] The following modules failed signature verification:")
+        for name, err in unverified_modules:
+            print(f" - {name}: {err}")
+        return False
+    else:
+        log("[INFO] All modules passed signature verification")
+    return True
+
 
 if __name__=='__main__':
     print("Not for standalone use.")
     exit(1)
+    
+    
+    
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-07-01
-# SHA256: 6f384e04d736e84288d7f7ad830044cb03271f6c0c0e2971e350796c27b09a61
+# Date: 2025-07-15
+# SHA256: 7b2bbd07d96355b07dfc7a9ceabc719416a74b03e514dd18630ee8ac7ed176a2

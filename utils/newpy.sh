@@ -104,14 +104,16 @@ fi
     echo "    OS: $OS_NAME $OS_VERSION"
     echo "    Bash: $BASH_VERSION_FULL"
     echo "    User: $USER_NAME"
-    echo
-    echo "Usage:"
-    echo "    ./$SCRIPT_NAME -i <inputFile> [--debug]"
+    if $EXECUTABLE; then
+        echo
+        echo "Usage:"
+        echo "    ./$SCRIPT_NAME -i <inputFile> [--debug]"
+    fi
     echo "\"\"\""
     echo
     if $EXECUTABLE; then
         echo "import argparse"
-        echo "from utils.utils import reset_directory, setup_logging, get_loggers"
+        echo "from utils.utils import reset_directory, setup_logging, get_loggers, verify_modules"
         echo "from inputs.utils import check_input_file"
         echo
         echo
@@ -134,18 +136,26 @@ fi
         echo "    parser.add_argument('--debug', action='store_true', help='Not for end user.')"
         echo "    args=parser.parse_args()"
         echo
-        echo "debug=args.debug"
+        echo "    debug=args.debug"
         echo
-        echo "success, error=check_input_file(args.inputFile, delimiter='\t')"
-        echo "if not success:"
-        echo "    print(f\"InputFile Validation Failure\", error)"
-        echo "    exit(1)"
+        echo "    success, error=check_input_file(args.inputFile, delimiter='\t')"
+        echo "    if not success:"
+        echo "        print(f\"InputFile Validation Failure\", error)"
+        echo "        exit(1)"
         echo
-        echo " logger, log, error=setup_logging(debug=args.debug, logfile='$SCRIPT_NAME')"
-        echo "#out_struct=['./output',"
-        echo "#            './output/temp']"
+        echo "    verify_signature()"
         echo
-        echo "#reset_directory(out_struct)"
+        echo "    checkList=['utils.utils', 'inputs.utils']"
+        echo "    passed=verify_modules(checkList)"
+        echo "    if not passed:"
+        echo "        error(\"[FATAL] Signature verification failed.")
+        echo "        exit(1)"
+        echo
+        echo "    logger, log, error=setup_logging(debug=args.debug, logfile='$SCRIPT_NAME')"
+        echo "    #out_struct=['./output',"
+        echo "    #            './output/temp']"
+        echo
+        echo "    #reset_directory(out_struct)"
         echo
         echo
         echo "if __name__ == '__main__':"
@@ -184,5 +194,5 @@ fi
 
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-07-01
-# SHA256: bba439df5cf089ebdd029f89a19292cd8f11f0bef292ea77f259de244c3196d9
+# Date: 2025-07-15
+# SHA256: 67804436b916ddb321817b277b69a943f59ccfb048c33b6cf4becea614db1311
