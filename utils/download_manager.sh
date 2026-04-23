@@ -54,3 +54,7 @@ if [[ -n "$CHECKSUM" ]]; then
   echo "Checksum OK."
 fi
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 90bfb61cd6132bb1e748ce08567a66cd5b84574091d1b260883c72f7ee99e0be

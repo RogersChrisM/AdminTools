@@ -48,5 +48,5 @@ echo "[INFO] Deleted: $DIR"
 
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-10-14
-# SHA256: 28826506c5cdc84716217288bf6aa4f6b5d8206e3be5c817a316bd609afa169e
+# Date: 2026-04-22
+# SHA256: 1a4716031b4e96d86f6959cfd4b2bd21304ef2141503fecf2ade14d945922dd8

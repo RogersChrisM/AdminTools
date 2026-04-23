@@ -93,3 +93,7 @@ if [[ "$1" == "--all" ]]; then
 else
     sign_file "$1"
 fi
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 259c404d42cb0715d44114d0db72daed5c2e5a624d5b1888187872e3a06dbaa3

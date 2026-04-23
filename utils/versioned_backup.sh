@@ -53,3 +53,7 @@ else
 fi
 
 echo "Compressed backup created: $backup_name"
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 58a4c8076fd44248af3cd47cf90a8244b1504f3d14fbef38175f1acbbd007915

@@ -68,5 +68,5 @@ fi
 
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-10-14
-# SHA256: 52ffd0aa57b1ea1f28e10355c0965605eb94a0b41c2a2302bf2513dd261286b5
+# Date: 2026-04-22
+# SHA256: 14d0c153d9c275adc188d9abc1581ec1b945e2bed414ba16f95787ad920c527d

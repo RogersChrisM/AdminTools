@@ -27,3 +27,7 @@ spinner_stop() {
     printf "\r   \r"
   fi
 }
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 00eb0aab3471bcaea958b3c02b870c289cb00de78a63c225230c8d0890c0ba60

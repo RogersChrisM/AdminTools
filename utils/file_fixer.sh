@@ -42,3 +42,7 @@ for file in "$@"; do
   echo "[DONE] Fixed $file"
 done
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 26d3041011eeffdbd2c818e0e0dd67d78186d8030289e11991c1e0df9fc18f3f

@@ -43,3 +43,7 @@ case "$ACTION" in
     ;;
 esac
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: af3b2eb5bb60f0f462011797d836a3a372dbd1f5624d8315945c2b4bf7755214

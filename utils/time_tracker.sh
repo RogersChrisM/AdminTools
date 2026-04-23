@@ -90,3 +90,7 @@ case "$command" in
     ;;
 esac
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 2a4a09549f7c8795aaf56d09a30de9f172508eeec693411e9c124cd0d8eed6d6

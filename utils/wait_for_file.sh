@@ -27,3 +27,7 @@ done
 
 echo "[OK] File '$FILE' detected."
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 1c54d499d700bd5e1c23265eb2accc80c5ce5fec9048c9b7aa9a269c3fd889e3

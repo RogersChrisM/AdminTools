@@ -37,3 +37,7 @@ else
     exit 1
 fi
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 225f67c0a9bd653d5a3f8cc9d5747832a13c46d205a4cee26563c335c42f7c2d

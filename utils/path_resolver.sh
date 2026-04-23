@@ -40,3 +40,7 @@ fi
 
 echo "$abs_path"
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 9e398d60f812fcf3bbc13c831ce8c0393a0a98f53d6668561531382107736a16

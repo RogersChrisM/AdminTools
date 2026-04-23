@@ -58,5 +58,5 @@ echo "Done."
 
 # --- Signature ---
 # Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-07-14
+# Date: 2026-04-22
 # SHA256: f62a730a1c61505329246822eef0cdb985722796125bf0930ed0562cf893417a

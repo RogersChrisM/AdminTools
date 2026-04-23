@@ -30,3 +30,7 @@ echo_green "Spinner task completed!"
 
 log_info "Script finished"
 echo_blue "Check the log file ($LOG_FILE) for details."
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 88e66a8c36ca1360cb7430d0862e87b11291597596bc97075d0b7186e618729e

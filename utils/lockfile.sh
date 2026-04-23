@@ -27,3 +27,7 @@ echo "[INFO] Lockfile '$LOCKFILE' created."
 
 # Cleanup happens automatically on script exit (trap)
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: a1d393077ec71748963d73641ede59df0dd52aec454138f2fbfcdc4a6044e3db

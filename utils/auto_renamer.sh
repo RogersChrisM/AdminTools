@@ -25,3 +25,7 @@ for file in "$@"; do
   fi
 done
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: af0290fe45a6451bfc9126309e6af59f238c085d3355c5a0db62a34bbc603ad0

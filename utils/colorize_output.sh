@@ -21,3 +21,7 @@ echo_green()  { color_echo "$GREEN" "$@"; }
 echo_yellow() { color_echo "$YELLOW" "$@"; }
 echo_blue()   { color_echo "$BLUE" "$@"; }
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: ada2eaa905056b94a0e2edc97fe57f83cdf2c73f0999015aaa31593ca7ef361f

@@ -49,3 +49,7 @@ if (( found == 0 )); then
   echo "No duplicates found."
 fi
 
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 0eb090006dbbf7613f36041bae4305cab3e93f8c7d75fa28eb462838a24fd57d

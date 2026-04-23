@@ -39,3 +39,7 @@ esac
 #timestamp.sh human    # Outputs something like "May 29 2025 14:32:01"
 #timestamp.sh file     # Outputs "20250529_143201" suitable for filenames
 #timestamp.sh epoch    # Outputs Unix epoch time in seconds
+# --- Signature ---
+# Author: CM Rogers (https://github.com/RogersChrisM/)
+# Date: 2026-04-22
+# SHA256: 0b533a0ecb0dac2d78f06e94a4462f4a830ab950ff45d0583ea44c5609fc78c1
