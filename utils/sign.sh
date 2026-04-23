@@ -1,63 +1,95 @@
 #!/bin/bash
 
-#FileName:  sign_script.sh
+#FileName:  sign.sh
 #
 #Author: Christopher M. Rogers (https://github.com/RogersChrisM/)
 #
 #Description:
-#    Signs file for general verification use by adding or replacing a trailing SHA256 signature block.
+#    Signs one or all scripts by adding or replacing a trailing SHA256 signature block.
+#    Use --all to bulk-sign every .sh and .py file in the repo (e.g. after a fork/clone).
+#    Individual file signing is used internally by the pre-commit hook.
 #
 #Params:
-#    script (str): Name of script to be signed.
+#    script (str): Path to the script to sign.
+#      --all   : Sign all .sh and .py files found under ADMIN_TOOLS_DIR.
 #
 #Associated Package:
 #    admin_tools (CM Rogers)
 #
 #Usage:
-#    sign_script.sh <script>
+#    sign.sh <script>
+#    sign.sh --all
 
 usage() {
-    echo "Usage: $0 <script>"
-    echo "<script>    Script to sign"
+    echo "Usage:"
+    echo "  $0 <script>    Sign a single script"
+    echo "  $0 --all       Sign all .sh and .py files in the repo"
     exit 1
 }
 
+# ── Resolve repo root ────────────────────────────────────────────────────────
+ADMIN_TOOLS_DIR="${ADMIN_TOOLS_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+
+# ── Core signing function ────────────────────────────────────────────────────
+sign_file() {
+    local SCRIPT="$1"
+
+    if [[ ! -f "$SCRIPT" ]]; then
+        echo "Error: '$SCRIPT' does not exist."
+        return 1
+    fi
+
+    local TMP_FILE
+    TMP_FILE=$(mktemp)
+
+    # Strip existing signature block (if any)
+    awk '
+        /^# --- Signature ---/ { exit }
+        { print }
+    ' "$SCRIPT" > "$TMP_FILE"
+
+    local HASH
+    HASH=$(shasum -a 256 "$TMP_FILE" | awk '{print $1}')
+
+    mv "$TMP_FILE" "$SCRIPT"
+
+    {
+        echo "# --- Signature ---"
+        echo "# Author: CM Rogers (https://github.com/RogersChrisM/)"
+        echo "# Date: $(date +%Y-%m-%d)"
+        echo "# SHA256: $HASH"
+    } >> "$SCRIPT"
+
+    chmod +x "$SCRIPT"
+    echo "Signed: $SCRIPT"
+}
+
+# ── Dispatch ─────────────────────────────────────────────────────────────────
 if [[ $# -lt 1 ]]; then
     echo "Error: Missing required arguments."
     usage
 fi
 
-SCRIPT="$1"
+if [[ "$1" == "--all" ]]; then
+    echo "Bulk-signing all .sh and .py files under: $ADMIN_TOOLS_DIR"
+    echo ""
+    SIGNED=0
+    FAILED=0
 
-if [[ ! -f "$SCRIPT" ]]; then
-    echo "Error: '$SCRIPT' does not exist."
-    exit 1
+    while IFS= read -r -d '' file; do
+        if sign_file "$file"; then
+            (( SIGNED++ ))
+        else
+            (( FAILED++ ))
+        fi
+    done < <(find "$ADMIN_TOOLS_DIR" \
+                  -not -path '*/__pycache__/*' \
+                  -not -path '*/.git/*' \
+                  \( -name "*.sh" -o -name "*.py" \) \
+                  -print0)
+
+    echo ""
+    echo "Done. Signed: $SIGNED  Failed: $FAILED"
+else
+    sign_file "$1"
 fi
-
-TMP_FILE=$(mktemp)
-
-awk '
-    BEGIN { skip=0 }
-    /^# --- Signature ---/ { exit }  # Stop at the signature block
-    { print }
-' "$SCRIPT" > "$TMP_FILE"
-
-HASH=$(shasum -a 256 "$TMP_FILE" | awk '{print $1}')
-
-mv "$TMP_FILE" "$SCRIPT"
-
-{
-    echo "# --- Signature ---"
-    echo "# Author: CM Rogers (https://github.com/RogersChrisM/)"
-    echo "# Date: $(date +%Y-%m-%d)"
-    echo "# SHA256: $HASH"
-} >> "$SCRIPT"
-
-chmod +x "$SCRIPT"
-
-
-
-# --- Signature ---
-# Author: CM Rogers (https://github.com/RogersChrisM/)
-# Date: 2025-06-26
-# SHA256: 44fd4f569a7c200f3a14babc61ec68c6d658a42a03944555d5b4dbb65fafef0e
